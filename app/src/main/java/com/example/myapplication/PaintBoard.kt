@@ -13,11 +13,15 @@ import java.util.jar.Attributes
 
 class PaintBoard(context:Context,attribute:AttributeSet) :View(context,attribute){
 
-    private  var painter:Paint
+    private var painter:Paint
     private var bmap :Bitmap
+    private var ncanvas:Canvas
     init {
         val width = Resources.getSystem().displayMetrics.widthPixels
         bmap = Bitmap.createBitmap(width, 800, Bitmap.Config.ARGB_8888)
+
+        ncanvas = Canvas(bmap)
+        ncanvas.drawColor(Color.RED)
 
         painter = Paint()
         painter.setColor(Color.BLACK)
