@@ -23,7 +23,7 @@ class PaintBoard(context:Context,attribute:AttributeSet) :View(context,attribute
         bmap = Bitmap.createBitmap(width,height, Bitmap.Config.ARGB_8888)
 
         ncanvas = Canvas(bmap)
-        ncanvas.drawColor(Color.RED)
+        ncanvas.drawColor(Color.blue())
 
         painter = Paint()
         painter.setColor(Color.BLACK)
