@@ -17,8 +17,10 @@ class PaintBoard(context:Context,attribute:AttributeSet) :View(context,attribute
     private var bmap :Bitmap
     private var ncanvas:Canvas
     init {
+
         val width = Resources.getSystem().displayMetrics.widthPixels
-        bmap = Bitmap.createBitmap(width, 800, Bitmap.Config.ARGB_8888)
+        val height = Resources.getSystem().displayMetrics.heightPixels
+        bmap = Bitmap.createBitmap(width,height, Bitmap.Config.ARGB_8888)
 
         ncanvas = Canvas(bmap)
         ncanvas.drawColor(Color.RED)
