@@ -16,6 +16,9 @@ class PaintBoard(context:Context,attribute:AttributeSet) :View(context,attribute
     private var painter:Paint
     private var bmap :Bitmap
     private var ncanvas:Canvas
+    private var startX:Float = 0f
+    private var startY:Float = 0f
+
     init {
 
         val width = Resources.getSystem().displayMetrics.widthPixels
@@ -23,13 +26,16 @@ class PaintBoard(context:Context,attribute:AttributeSet) :View(context,attribute
         bmap = Bitmap.createBitmap(width,height, Bitmap.Config.ARGB_8888)
 
         ncanvas = Canvas(bmap)
-        ncanvas.drawColor(Color.blue())
-
+        ncanvas.drawColor(Color.BLUE)
         painter = Paint()
         painter.setColor(Color.BLACK)
         painter.setStrokeWidth(10f)
+
     }
 
+    public  fun set_painter(npainter: Paint){
+        painter = npainter
+    }
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
         if (canvas != null) {
@@ -39,6 +45,26 @@ class PaintBoard(context:Context,attribute:AttributeSet) :View(context,attribute
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
-        return super.onTouchEvent(event)
+        if (event != null) {
+            when(event.action){
+                MotionEvent.ACTION_DOWN -> {
+                    startX = event.x
+                    startY = event.y
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    val stopX = event.x
+                    val stopY = event.y
+
+                    ncanvas.drawLine(startX, startY, stopX, stopY, painter)
+                    startX = event.x
+                    startY = event.y
+
+                    // call onDraw
+                    invalidate()
+                }
+            }
+        }
+
+        return true
     }
 }
