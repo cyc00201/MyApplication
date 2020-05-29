@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">My Application</string>
+    <string-array name="spn_list">
+        <item>選項1</item>
+        <item>選項2</item>
+        <item>選項3</item>
+        <item>選項4</item>
+        <item>選項5</item>
+    </string-array>
 </resources>
