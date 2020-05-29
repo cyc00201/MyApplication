@@ -28,7 +28,7 @@ class PaintBoard(context:Context,attribute:AttributeSet) :View(context,attribute
         ncanvas = Canvas(bmap)
         ncanvas.drawColor(Color.BLUE)
         painter = Paint()
-        painter.setColor(Color.BLACK)
+        painter.setColor(Color.RED)
         painter.setStrokeWidth(10f)
 
     }
