@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.KeyEvent
 import android.view.KeyEvent.ACTION_DOWN
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -32,6 +33,7 @@ class MainActivity : AppCompatActivity() {
 
         //Toast.makeText(this,paintwidthtext.text.toString(),Toast.LENGTH_SHORT).show()
 
+
     }
 
     override fun onResume() {
@@ -41,10 +43,14 @@ class MainActivity : AppCompatActivity() {
             if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
 
                 paintboard.setpainterwidh(paintwidthtext.text.toString().toFloat())
+
+                val imm = getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
+                imm?.hideSoftInputFromWindow(v.windowToken, 0)
                 return@OnKeyListener true
             }
             false
         })
+
     }
 
 
