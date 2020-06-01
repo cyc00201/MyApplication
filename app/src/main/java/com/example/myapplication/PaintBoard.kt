@@ -9,6 +9,7 @@ import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import kotlinx.android.synthetic.main.activity_main.*
 import java.util.jar.Attributes
 
 class PaintBoard(context:Context,attribute:AttributeSet) :View(context,attribute){
@@ -20,6 +21,7 @@ class PaintBoard(context:Context,attribute:AttributeSet) :View(context,attribute
     private var startY:Float = 0f
 
     init {
+
 
         val width = Resources.getSystem().displayMetrics.widthPixels
         val height = Resources.getSystem().displayMetrics.heightPixels
@@ -33,8 +35,9 @@ class PaintBoard(context:Context,attribute:AttributeSet) :View(context,attribute
 
     }
 
-    public  fun set_painter(npainter: Paint){
-        painter = npainter
+    public  fun setpainterwidh(width:Float){
+        painter.setStrokeWidth(width)
+
     }
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
