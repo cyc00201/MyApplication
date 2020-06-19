@@ -2,17 +2,18 @@ package com.example.myapplication
 
 import android.content.Context
 import android.content.res.Resources
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
+import android.graphics.*
+import android.net.Uri
 import android.util.AttributeSet
+import android.util.Log
 import android.view.MotionEvent
-import android.view.View
-import kotlinx.android.synthetic.main.activity_main.*
-import java.util.jar.Attributes
+import android.widget.Toast
+import java.io.File
+import java.io.InputStream
+import java.net.URL
 
-class PaintBoard(context:Context,attribute:AttributeSet) :View(context,attribute){
+
+class PaintBoard(context:Context,attribute:AttributeSet) : androidx.appcompat.widget.AppCompatImageView(context,attribute){
 
     private var painter:Paint
     private var bmap :Bitmap
@@ -21,7 +22,6 @@ class PaintBoard(context:Context,attribute:AttributeSet) :View(context,attribute
     private var startY:Float = 0f
 
     init {
-
 
         val width = Resources.getSystem().displayMetrics.widthPixels
         val height = Resources.getSystem().displayMetrics.heightPixels
@@ -39,6 +39,22 @@ class PaintBoard(context:Context,attribute:AttributeSet) :View(context,attribute
         painter.setStrokeWidth(width)
 
     }
+
+    public fun getBitmap():Bitmap{
+        return bmap
+    }
+    public fun setBitmap(bmp: Bitmap){
+
+        try {
+
+           ncanvas.drawBitmap(bmp,0f,0f,painter)
+        } catch (e: Exception) {
+            Log.e("Terror", e.message)
+            Toast.makeText(context,e.message,Toast.LENGTH_LONG).show()
+        }
+
+    }
+
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
         if (canvas != null) {
