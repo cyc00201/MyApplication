@@ -17,21 +17,23 @@ class PaintBoard(context:Context,attribute:AttributeSet) : androidx.appcompat.wi
 
     private var painter:Paint
     private var bmap :Bitmap
-    private var ncanvas:Canvas
+    private  var index = 1
+    private var list:MutableList<Bitmap>
+    private  var canvas:Canvas
     private var startX:Float = 0f
     private var startY:Float = 0f
 
     init {
-
         val width = Resources.getSystem().displayMetrics.widthPixels
         val height = Resources.getSystem().displayMetrics.heightPixels
         bmap = Bitmap.createBitmap(width,height, Bitmap.Config.ARGB_8888)
 
-        ncanvas = Canvas(bmap)
-        ncanvas.drawColor(Color.BLUE)
+        bmap.eraseColor(Color.BLUE)
+        canvas = Canvas(bmap)
         painter = Paint()
         painter.setColor(Color.GRAY)
         painter.setStrokeWidth(10f)
+        list = mutableListOf(Bitmap.createBitmap(bmap))
 
     }
 
@@ -40,26 +42,42 @@ class PaintBoard(context:Context,attribute:AttributeSet) : androidx.appcompat.wi
 
     }
 
+    public fun unredo(value:Int){
+
+
+        if(index+value <=0 || index+value>list.size ) {
+            return
+        }
+        index+=value
+      //  Log.i("Terror","NEW "+index.toString() + " " + list.size.toString())
+
+
+        setBitmap(list[index-1])
+
+
+    }
     public fun getBitmap():Bitmap{
         return bmap
     }
     public fun setBitmap(bmp: Bitmap){
 
         try {
+         //  bmap = Bitmap.createBitmap(bmp)
+            canvas?.drawBitmap(bmp,0f,0f,painter)
 
-           ncanvas.drawBitmap(bmp,0f,0f,painter)
+
         } catch (e: Exception) {
             Log.e("Terror", e.message)
             Toast.makeText(context,e.message,Toast.LENGTH_LONG).show()
         }
-
     }
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
-        if (canvas != null) {
-            canvas.drawBitmap(bmap,0f,0f,painter)
-        }
+
+        canvas?.drawBitmap(bmap,0f,0f,painter)
+
+        //Log.i("Terror", "DRAW")
 
     }
 
@@ -71,17 +89,41 @@ class PaintBoard(context:Context,attribute:AttributeSet) : androidx.appcompat.wi
                     startY = event.y
                 }
                 MotionEvent.ACTION_MOVE -> {
+
                     val stopX = event.x
                     val stopY = event.y
 
-                    ncanvas.drawLine(startX, startY, stopX, stopY, painter)
+                   canvas.drawLine(startX, startY, stopX, stopY, painter)
                     startX = event.x
                     startY = event.y
 
-                    // call onDraw
                     invalidate()
                 }
+
+                MotionEvent.ACTION_UP ->{
+
+                    if(index<list.size){
+                        if(index>1){
+                        list = list.dropLast(list.size-index) as MutableList<Bitmap>
+                        }
+                       else{
+                            var bitmap2 = Bitmap.createBitmap(bmap)
+                            bitmap2.eraseColor(Color.BLUE)
+                            list = mutableListOf(Bitmap.createBitmap(bitmap2))
+                        }
+                        //Log.i("Terror", "DROP" + index.toString() + " " + list.size.toString())
+                    }
+                    index++
+
+
+                    list.add(Bitmap.createBitmap(bmap))
+                   // Log.i("Terror", index.toString() + " " + list.size.toString())
+
+
+
+                }
             }
+
         }
 
         return true
