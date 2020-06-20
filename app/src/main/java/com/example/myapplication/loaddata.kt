@@ -44,7 +44,7 @@ class loaddata : AppCompatActivity() {
     override fun finish() {
         //Toast.makeText(this,"finish",Toast.LENGTH_SHORT).show()
 
-            sendDataBackToPreviousActivity()
+        sendDataBackToPreviousActivity()
 
         super.finish()
     }

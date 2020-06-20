@@ -17,6 +17,7 @@ class PaintBoard(context:Context,attribute:AttributeSet) : androidx.appcompat.wi
 
     private var painter:Paint
     private var bmap :Bitmap
+    private var base :Bitmap
     private  var index = 1
     private var list:MutableList<Bitmap>
     private  var canvas:Canvas
@@ -27,8 +28,8 @@ class PaintBoard(context:Context,attribute:AttributeSet) : androidx.appcompat.wi
         val width = Resources.getSystem().displayMetrics.widthPixels
         val height = Resources.getSystem().displayMetrics.heightPixels
         bmap = Bitmap.createBitmap(width,height, Bitmap.Config.ARGB_8888)
-
         bmap.eraseColor(Color.BLUE)
+        base = Bitmap.createBitmap(bmap)
         canvas = Canvas(bmap)
         painter = Paint()
         painter.setColor(Color.GRAY)
@@ -42,19 +43,25 @@ class PaintBoard(context:Context,attribute:AttributeSet) : androidx.appcompat.wi
 
     }
 
+    public fun ResetBitmapset(){
+        index = 1
+        list = mutableListOf(Bitmap.createBitmap(base))
+    }
+    public fun setpaintColor(color:Int){
+        painter.color = color
+    }
+    public  fun setbase(nbase:Bitmap){
+        base.eraseColor(Color.BLUE)
+        base = Bitmap.createBitmap(nbase)
+    }
     public fun unredo(value:Int){
-
-
+        //復原ＯＲ重做
         if(index+value <=0 || index+value>list.size ) {
             return
         }
         index+=value
-      //  Log.i("Terror","NEW "+index.toString() + " " + list.size.toString())
-
-
+      Log.i("Terror","NEW "+index.toString() + " " + list.size.toString())
         setBitmap(list[index-1])
-
-
     }
     public fun getBitmap():Bitmap{
         return bmap
@@ -62,10 +69,7 @@ class PaintBoard(context:Context,attribute:AttributeSet) : androidx.appcompat.wi
     public fun setBitmap(bmp: Bitmap){
 
         try {
-         //  bmap = Bitmap.createBitmap(bmp)
             canvas?.drawBitmap(bmp,0f,0f,painter)
-
-
         } catch (e: Exception) {
             Log.e("Terror", e.message)
             Toast.makeText(context,e.message,Toast.LENGTH_LONG).show()
@@ -74,10 +78,7 @@ class PaintBoard(context:Context,attribute:AttributeSet) : androidx.appcompat.wi
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
-
         canvas?.drawBitmap(bmap,0f,0f,painter)
-
-        //Log.i("Terror", "DRAW")
 
     }
 
@@ -107,20 +108,13 @@ class PaintBoard(context:Context,attribute:AttributeSet) : androidx.appcompat.wi
                         list = list.dropLast(list.size-index) as MutableList<Bitmap>
                         }
                        else{
-                            var bitmap2 = Bitmap.createBitmap(bmap)
-                            bitmap2.eraseColor(Color.BLUE)
-                            list = mutableListOf(Bitmap.createBitmap(bitmap2))
+                            ResetBitmapset()
                         }
-                        //Log.i("Terror", "DROP" + index.toString() + " " + list.size.toString())
+
                     }
                     index++
-
-
-                    list.add(Bitmap.createBitmap(bmap))
-                   // Log.i("Terror", index.toString() + " " + list.size.toString())
-
-
-
+                    list.add(Bitmap.createBitmap(bmap))//存步驟
+                    Log.i("Terror",index.toString() + " " + list.size.toString())
                 }
             }
 

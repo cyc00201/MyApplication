@@ -26,6 +26,8 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
+import androidx.core.graphics.toColor
+import androidx.core.graphics.toColorInt
 import androidx.core.net.toFile
 import androidx.core.net.toUri
 import java.io.File
@@ -99,7 +101,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun colorselect(){
         val intent = Intent(this, ColoerSelectActivity ::class.java)
-        startActivity(intent)
+        startActivityForResult(intent, Color_REQUEST_CODE)
     }
 
     companion object {
@@ -115,7 +117,10 @@ class MainActivity : AppCompatActivity() {
                 val file = File(dir,message)
 
                 val stream = file.inputStream()
-                paintboard.setBitmap( BitmapFactory.decodeStream(stream))
+                val filebitmap:Bitmap = BitmapFactory.decodeStream(stream)
+                paintboard.setbase(filebitmap)
+                paintboard.ResetBitmapset()
+                paintboard.setBitmap(filebitmap)
                 stream.close()
 
             }
@@ -123,6 +128,9 @@ class MainActivity : AppCompatActivity() {
         else if(requestCode == Color_REQUEST_CODE){
             if (resultCode == Activity.RESULT_OK){
                 Toast.makeText(this,"select",Toast.LENGTH_SHORT).show()
+                val color:Int= data!!.getIntExtra("pixel",Color.GRAY)
+                colorbutton.setBackgroundColor(color)
+                paintboard.setpaintColor(color)
             }
         }
         else {
@@ -182,5 +190,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 }
+
+
 
 

@@ -1,9 +1,13 @@
 package com.example.myapplication
 
+import android.app.Activity
+import android.app.usage.UsageEvents
 import android.content.Context
+import android.content.Intent
 import android.content.res.Resources
 import android.graphics.*
 import android.util.AttributeSet
+import android.view.MotionEvent
 import android.widget.Toast
 import androidx.core.graphics.toColor
 import java.lang.Math.*
@@ -31,6 +35,23 @@ class ColorWheel(context: Context,attributes: AttributeSet): androidx.appcompat.
 
     }
 
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        if (event != null) {
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+
+                    val intent = Intent().apply {
+                        putExtra("pixel",getPixel(event.x.toInt(),event.y.toInt()))
+                        // Put your data here if you want.
+                    }
+                    (context as ColoerSelectActivity).setResult(Activity.RESULT_OK, intent)
+                    (context as ColoerSelectActivity).finish()
+                }
+            }
+        }
+        return super.onTouchEvent(event)
+    }
+
 
    public fun setbrightness(value:Float){
         brightness = value
@@ -40,11 +61,11 @@ class ColorWheel(context: Context,attributes: AttributeSet): androidx.appcompat.
 
     private fun setPixel(x: Int, y: Int,hsv:FloatArray) {bmap.setPixel(x,y,Color.HSVToColor(hsv))}
 
-    public fun getPixel(x: Int, y: Int) { bmap.getPixel(x, y).toColor()}
+    public fun getPixel(x: Int, y: Int):Int { return bmap.getPixel(x,y)}
 
-    fun colorWheel() {
+    private fun colorWheel() {
 
-       bmap.eraseColor(Color.BLACK)
+        bmap.eraseColor(Color.WHITE)
         val centerX = bmap.width / 2
         val centerY = bmap.height / 2
         val radius = minOf(centerX, centerY)
