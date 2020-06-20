@@ -18,8 +18,6 @@ class Adapter(private val context: Activity, private val IdList: MutableList<Str
         val button = rowView.findViewById<Button>(R.id.test)
         button.setText( IdList[p0])
         button.setOnClickListener {click(button)}
-      //  val imageView = rowView.findViewById<ImageView>(R.id.image_item)
-      //  imageView.setImageResource(IdList[p0])
         return rowView
     }
 

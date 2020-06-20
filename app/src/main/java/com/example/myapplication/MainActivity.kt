@@ -2,6 +2,7 @@ package com.example.myapplication
 
 import android.Manifest
 import android.app.Activity
+import android.content.ComponentCallbacks2
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
@@ -22,12 +23,11 @@ import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.Toast
+import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
+import androidx.core.graphics.toColor
+import androidx.core.graphics.toColorInt
 import androidx.core.net.toFile
 import androidx.core.net.toUri
 import java.io.File
@@ -43,19 +43,24 @@ class MainActivity : AppCompatActivity() {
     private lateinit var paintboard:PaintBoard
     private  lateinit var  paintwidthtext:EditText
     private  lateinit var  savebutton:Button
-
+    private  lateinit var  colorbutton:Button
+    private  lateinit var  redobutton: ImageButton
+    private  lateinit var  undobutton: ImageButton
     private  lateinit var  openfilebutton:Button
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         paintwidthtext = findViewById(R.id.EditText)
-
         paintboard = findViewById(R.id.paint_board)
-
+        colorbutton = findViewById(R.id.button)
         savebutton = findViewById(R.id.button3)
+        redobutton = findViewById(R.id.imageButton2)
+        undobutton = findViewById(R.id.imageButton)
        openfilebutton = findViewById(R.id.button5)
+
         //Toast.makeText(this,paintwidthtext.text.toString(),Toast.LENGTH_SHORT).show()
 
 
@@ -67,6 +72,9 @@ class MainActivity : AppCompatActivity() {
 
         savebutton.setOnClickListener { saveClickHandler ()}
         openfilebutton.setOnClickListener { open() }
+        redobutton.setOnClickListener { paintboard.unredo(1) }
+        undobutton.setOnClickListener {paintboard.unredo(-1)  }
+        colorbutton.setOnClickListener { colorselect() }
         paintwidthtext.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
             if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
 
@@ -85,29 +93,47 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun open(){
-
         val intent = Intent(this, loaddata::class.java)
-        startActivityForResult(intent, REQUEST_CODE)
+        startActivityForResult(intent, File_REQUEST_CODE)
+    }
 
 
+
+    private fun colorselect(){
+        val intent = Intent(this, ColoerSelectActivity ::class.java)
+        startActivityForResult(intent, Color_REQUEST_CODE)
     }
 
     companion object {
-        const val REQUEST_CODE = 0
+        const val File_REQUEST_CODE = 0
+        const val Color_REQUEST_CODE = 1
     }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == REQUEST_CODE) {
-            if (resultCode == Activity.RESULT_OK) {
+        if (requestCode == File_REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {//讀取回傳的檔名
                 val message:String = data!!.getStringExtra("filename")
-                Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
                 val path = getExternalFilesDir(null)
                 val dir = File(path,"Painter")
                 val file = File(dir,message)
 
-                paintboard.setBitmap( BitmapFactory.decodeStream(file.inputStream()))
+                val stream = file.inputStream()
+                val filebitmap:Bitmap = BitmapFactory.decodeStream(stream)
+                paintboard.setbase(filebitmap)
+                paintboard.ResetBitmapset()
+                paintboard.setBitmap(filebitmap)
+                stream.close()
 
             }
-        } else {
+        }
+        else if(requestCode == Color_REQUEST_CODE){
+            if (resultCode == Activity.RESULT_OK){
+                Toast.makeText(this,"select",Toast.LENGTH_SHORT).show()
+                val color:Int= data!!.getIntExtra("pixel",Color.GRAY)
+                colorbutton.setBackgroundColor(color)
+                paintboard.setpaintColor(color)
+            }
+        }
+        else {
             super.onActivityResult(requestCode, resultCode, data)
         }
     }
@@ -147,7 +173,6 @@ class MainActivity : AppCompatActivity() {
 
                 val stream = FileOutputStream(file)
                 paintboard.getBitmap().compress(Bitmap.CompressFormat.JPEG, 100, stream)
-                stream.flush()
                 stream.close()
 
 
@@ -160,12 +185,12 @@ class MainActivity : AppCompatActivity() {
 
             }
         }
-       else{
-            Toast.makeText(this,"???",Toast.LENGTH_LONG).show()
-        }
+
 
     }
 
 }
+
+
 
 
