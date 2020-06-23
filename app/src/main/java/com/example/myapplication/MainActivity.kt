@@ -2,40 +2,21 @@ package com.example.myapplication
 
 import android.Manifest
 import android.app.Activity
-import android.content.ComponentCallbacks2
-import android.content.ContentValues
-import android.content.Context
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.*
-import android.media.Image
-import android.net.Uri
-import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Environment
-import android.provider.MediaStore
-import android.provider.MediaStore.Audio.Albums.getContentUri
-import android.provider.MediaStore.Images.Media.getContentUri
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
-import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
-import androidx.core.graphics.toColor
-import androidx.core.graphics.toColorInt
-import androidx.core.net.toFile
-import androidx.core.net.toUri
 import java.io.File
 import java.io.FileOutputStream
-import java.io.InputStream
-import java.io.OutputStream
-import java.net.URL
-import java.nio.file.Files.createFile
 
 class MainActivity : AppCompatActivity() {
 
@@ -71,7 +52,7 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
 
         savebutton.setOnClickListener { saveClickHandler ()}
-        openfilebutton.setOnClickListener { open() }
+        openfilebutton.setOnClickListener { to_openfile_interface() }
         redobutton.setOnClickListener { paintboard.unredo(1) }
         undobutton.setOnClickListener {paintboard.unredo(-1)  }
         colorbutton.setOnClickListener { colorselect() }
@@ -92,12 +73,26 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun open(){
+    private fun to_openfile_interface(){
         val intent = Intent(this, loaddata::class.java)
         startActivityForResult(intent, File_REQUEST_CODE)
     }
 
-
+    private  fun openfile(data:Intent){
+        val message:String = data.getStringExtra("filename")
+        val path = getExternalFilesDir(null)
+        val dir = File(path,"Painter")
+        val file = File(dir,message)
+        val stream = file.inputStream()
+        val bitmap:Bitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeStream(stream),
+            paintboard.getBitmap().width,
+            paintboard.getBitmap().height,
+            true)
+        paintboard.setbase(bitmap)
+        paintboard.ResetBitmapset()
+        paintboard.setBitmap(bitmap)
+        stream.close()
+    }
 
     private fun colorselect(){
         val intent = Intent(this, ColoerSelectActivity ::class.java)
@@ -111,17 +106,24 @@ class MainActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == File_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {//讀取回傳的檔名
-                val message:String = data!!.getStringExtra("filename")
-                val path = getExternalFilesDir(null)
-                val dir = File(path,"Painter")
-                val file = File(dir,message)
 
-                val stream = file.inputStream()
-                val filebitmap:Bitmap = BitmapFactory.decodeStream(stream)
-                paintboard.setbase(filebitmap)
-                paintboard.ResetBitmapset()
-                paintboard.setBitmap(filebitmap)
-                stream.close()
+                val Alert_toSave  = AlertDialog.Builder(this)
+                    .setTitle("Alert")
+                    .setMessage("是否儲存現有圖片？")
+                    .setPositiveButton("是"
+                    ) { dialog, id ->
+                        saveClickHandler()
+                        openfile(data!!)
+                        // FIRE ZE MISSILES!
+                    }
+                    .setNegativeButton("否")
+                    { dialog, id ->
+                        openfile(data!!)
+                        // FIRE ZE MISSILES!
+                    }
+                    .create()
+                Alert_toSave.show()
+
 
             }
         }
@@ -190,6 +192,8 @@ class MainActivity : AppCompatActivity() {
     }
 
 }
+
+
 
 
 
