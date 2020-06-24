@@ -3,6 +3,7 @@ package com.example.myapplication
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.*
+import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.util.AttributeSet
 import android.util.Log
@@ -23,10 +24,11 @@ class PaintBoard(context:Context,attribute:AttributeSet) : androidx.appcompat.wi
     private  var canvas:Canvas
     private var startX:Float = 0f
     private var startY:Float = 0f
-
     init {
+
         val width = Resources.getSystem().displayMetrics.widthPixels
-        val height = Resources.getSystem().displayMetrics.heightPixels
+        val  height = Resources.getSystem().displayMetrics.heightPixels
+
         bmap = Bitmap.createBitmap(width,height, Bitmap.Config.ARGB_8888)
         bmap.eraseColor(Color.BLUE)
         base = Bitmap.createBitmap(bmap)
@@ -34,44 +36,48 @@ class PaintBoard(context:Context,attribute:AttributeSet) : androidx.appcompat.wi
         painter = Paint()
         painter.setColor(Color.GRAY)
         painter.setStrokeWidth(10f)
-        list = mutableListOf(Bitmap.createBitmap(bmap))
+        list = mutableListOf()
+        list.add(Bitmap.createBitmap(base))
 
     }
 
     public  fun setpainterwidh(width:Float){
         painter.setStrokeWidth(width)
-
     }
 
     public fun ResetBitmapset(){
         index = 1
-        list = mutableListOf(Bitmap.createBitmap(base))
+        list = mutableListOf(base)
+
     }
+
     public fun setpaintColor(color:Int){
         painter.color = color
     }
+
     public  fun setbase(nbase:Bitmap){
-        base.eraseColor(Color.BLUE)
         base = Bitmap.createBitmap(nbase)
     }
+
     public fun unredo(value:Int){
         //復原ＯＲ重做
         if(index+value <=0 || index+value>list.size ) {
             return
         }
         index+=value
-      Log.i("Terror","NEW "+index.toString() + " " + list.size.toString())
-        setBitmap(list[index-1])
+        setBitmap(Bitmap.createBitmap(list[index-1]))
     }
+
     public fun getBitmap():Bitmap{
         return bmap
     }
-    public fun setBitmap(bmp: Bitmap){
 
+    public fun setBitmap(bmp: Bitmap){
         try {
             canvas?.drawBitmap(bmp,0f,0f,painter)
-        } catch (e: Exception) {
-            Log.e("Terror", e.message)
+
+        }
+        catch (e: Exception) {
             Toast.makeText(context,e.message,Toast.LENGTH_LONG).show()
         }
     }
@@ -79,7 +85,6 @@ class PaintBoard(context:Context,attribute:AttributeSet) : androidx.appcompat.wi
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
         canvas?.drawBitmap(bmap,0f,0f,painter)
-
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
@@ -94,27 +99,23 @@ class PaintBoard(context:Context,attribute:AttributeSet) : androidx.appcompat.wi
                     val stopX = event.x
                     val stopY = event.y
 
-                   canvas.drawLine(startX, startY, stopX, stopY, painter)
+                    canvas.drawLine(startX, startY, stopX, stopY, painter)
                     startX = event.x
                     startY = event.y
 
                     invalidate()
                 }
 
-                MotionEvent.ACTION_UP ->{
-
+                MotionEvent.ACTION_UP ->{ //存步驟
                     if(index<list.size){
-                        if(index>1){
-                        list = list.dropLast(list.size-index) as MutableList<Bitmap>
+                        list = list.dropLast(list.size - index) as MutableList<Bitmap>
+                        if(list.size == 1){
+                            list = mutableListOf(base)
                         }
-                       else{
-                            ResetBitmapset()
-                        }
-
                     }
                     index++
-                    list.add(Bitmap.createBitmap(bmap))//存步驟
-                    Log.i("Terror",index.toString() + " " + list.size.toString())
+                    list?.add(Bitmap.createBitmap(bmap))
+
                 }
             }
 
