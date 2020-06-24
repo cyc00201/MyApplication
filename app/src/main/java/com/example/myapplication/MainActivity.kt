@@ -6,6 +6,7 @@ import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.Resources
 import android.graphics.*
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -41,11 +42,6 @@ class MainActivity : AppCompatActivity() {
         redobutton = findViewById(R.id.imageButton2)
         undobutton = findViewById(R.id.imageButton)
        openfilebutton = findViewById(R.id.button5)
-
-        //Toast.makeText(this,paintwidthtext.text.toString(),Toast.LENGTH_SHORT).show()
-
-
-
     }
 
     override fun onResume() {
@@ -67,9 +63,6 @@ class MainActivity : AppCompatActivity() {
             }
             false
         })
-
-
-
     }
 
 
@@ -107,7 +100,7 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == File_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {//讀取回傳的檔名
 
-                val Alert_toSave  = AlertDialog.Builder(this)
+                val alert_tosave  = AlertDialog.Builder(this)
                     .setTitle("Alert")
                     .setMessage("是否儲存現有圖片？")
                     .setPositiveButton("是"
@@ -122,14 +115,14 @@ class MainActivity : AppCompatActivity() {
                         // FIRE ZE MISSILES!
                     }
                     .create()
-                Alert_toSave.show()
+                alert_tosave.show()
 
 
             }
         }
         else if(requestCode == Color_REQUEST_CODE){
             if (resultCode == Activity.RESULT_OK){
-                Toast.makeText(this,"select",Toast.LENGTH_SHORT).show()
+                //選色
                 val color:Int= data!!.getIntExtra("pixel",Color.GRAY)
                 colorbutton.setBackgroundColor(color)
                 paintboard.setpaintColor(color)
@@ -161,7 +154,6 @@ class MainActivity : AppCompatActivity() {
 
         if(checkWritable()){
             try {
-
                 val fileName = (System.currentTimeMillis() / 1000).toString() + ".jpg"
                 val path = getExternalFilesDir(null)
                 val dir = File(path,"Painter");//File("storage/emulated/0/test.jpg")
@@ -174,7 +166,12 @@ class MainActivity : AppCompatActivity() {
 
 
                 val stream = FileOutputStream(file)
-                paintboard.getBitmap().compress(Bitmap.CompressFormat.JPEG, 100, stream)
+                Bitmap.createScaledBitmap(paintboard.getBitmap(),
+                    Resources.getSystem().displayMetrics.widthPixels,
+                    Resources.getSystem().displayMetrics.widthPixels,
+                true).
+                compress(Bitmap.CompressFormat.JPEG, 100, stream)
+
                 stream.close()
 
 

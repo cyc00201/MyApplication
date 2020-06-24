@@ -1,7 +1,10 @@
 package com.example.myapplication
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -33,7 +36,7 @@ class loaddata : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        linearlayout = findViewById(R.id.layout)
+       linearlayout = findViewById(R.id.layout)
         val listView = ListView(this)
         val adapter = Adapter(this, list)
         listView.adapter = adapter
@@ -43,6 +46,7 @@ class loaddata : AppCompatActivity() {
 
     override fun finish() {
         //Toast.makeText(this,"finish",Toast.LENGTH_SHORT).show()
+
 
         sendDataBackToPreviousActivity()
 
@@ -66,15 +70,17 @@ class loaddata : AppCompatActivity() {
     }
 
     private fun testfun() {
+
         val path = getExternalFilesDir(null)
+
+
         File(path, "Painter").walk().forEach {
 
             var temp = it.toString().substring(72)
             if (!temp.isEmpty()) {
                 temp = temp.substring(1)
-                // Log.i("Terror",temp)
+                //Log.i("Terror",temp)
                 list.add(temp)
-
             }
         }
     }
