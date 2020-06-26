@@ -16,6 +16,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.core.app.ActivityCompat
+import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
 import java.io.FileOutputStream
 
@@ -42,6 +43,18 @@ class MainActivity : AppCompatActivity() {
         redobutton = findViewById(R.id.imageButton2)
         undobutton = findViewById(R.id.imageButton)
         openfilebutton = findViewById(R.id.button5)
+        var zoomInButton: Button =findViewById(R.id.zoomInButton)
+        var zoomOutButton: Button =findViewById(R.id.zoomOutButton)
+        var btn_mover:Button=findViewById(R.id.move_r)
+        var btn_movel:Button=findViewById(R.id.move_l)
+        var btn_movet:Button=findViewById(R.id.move_t)
+        var btn_moveb:Button=findViewById(R.id.move_b)
+        zoomInButton.setOnClickListener{paintboard.setZoomIn()}
+        zoomOutButton.setOnClickListener { paintboard.setZoomOut() }
+        btn_mover.setOnClickListener { paintboard.move_canvas(1) }
+        btn_movel.setOnClickListener { paintboard.move_canvas(2) }
+        btn_movet.setOnClickListener { paintboard.move_canvas(3) }
+        btn_moveb.setOnClickListener { paintboard.move_canvas(4) }
     }
 
     override fun onResume() {
@@ -52,6 +65,7 @@ class MainActivity : AppCompatActivity() {
         redobutton.setOnClickListener { paintboard.unredo(1) }
         undobutton.setOnClickListener {paintboard.unredo(-1)  }
         colorbutton.setOnClickListener { colorselect() }
+
         paintwidthtext.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
             if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
 
