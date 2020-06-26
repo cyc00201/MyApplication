@@ -6,8 +6,13 @@
           <option name="url" value="http://github.com" />
           <option name="userName" value="cyc00201" />
         </UrlAndUserName>
+        <UrlAndUserName>
+          <option name="url" value="https://github.com/cyc00201/MyApplication.git" />
+          <option name="userName" value="" />
+        </UrlAndUserName>
       </list>
     </option>
+    <option name="cloneParentDir" value="/Applications/AndroidStudioProjects/final" />
   </component>
   <component name="Vcs.Log.App.Settings">
     <option name="SHOW_CHANGES_FROM_PARENTS" value="true" />
