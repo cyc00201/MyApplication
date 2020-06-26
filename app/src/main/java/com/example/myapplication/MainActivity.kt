@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
         savebutton = findViewById(R.id.button3)
         redobutton = findViewById(R.id.imageButton2)
         undobutton = findViewById(R.id.imageButton)
-       openfilebutton = findViewById(R.id.button5)
+        openfilebutton = findViewById(R.id.button5)
     }
 
     override fun onResume() {
