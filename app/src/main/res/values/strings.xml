@@ -1,10 +1,17 @@
 <resources>
     <string name="app_name">My Application</string>
-    <string-array name="spn_list">
-        <item>選項1</item>
-        <item>選項2</item>
-        <item>選項3</item>
-        <item>選項4</item>
-        <item>選項5</item>
+    <string-array name="layer_list">
+        <item>圖層1</item>
+        <item>圖層2</item>
+        <item>圖層3</item>
+        <item>圖層4</item>
+        <item>圖層5</item>
+    </string-array>
+    <string-array name="mode_list">
+        <item>模式1</item>
+        <item>模式2</item>
+        <item>模式3</item>
+        <item>模式4</item>
+        <item>模式5</item>
     </string-array>
 </resources>
