@@ -1,3 +1,5 @@
+
+
 package com.example.myapplication
 
 import android.graphics.Bitmap
@@ -9,11 +11,7 @@ class Layer(bmp: Bitmap) {
     private val redoStack: Stack<Bitmap> = Stack()
 
     var bitmap: Bitmap = bmp
-        set(bmp) {
-            field = bmp
-            undoStack.pop()
-            undoStack.push(bmp)
-        }
+        private set
 
     init {
         undoStack.push(Bitmap.createBitmap(bitmap))
@@ -26,7 +24,7 @@ class Layer(bmp: Bitmap) {
         for (i in 0 until value) {
             redoStack.push(undoStack.pop())
         }
-        bitmap = undoStack.peek()
+        bitmap = Bitmap.createBitmap(undoStack.peek())
     }
 
     fun redo(value: Int) {
@@ -35,7 +33,7 @@ class Layer(bmp: Bitmap) {
         for (i in 0 until value) {
             undoStack.push(redoStack.pop())
         }
-        bitmap = undoStack.peek()
+        bitmap = Bitmap.createBitmap(undoStack.peek())
     }
 
     fun updateHistory() {
@@ -43,3 +41,4 @@ class Layer(bmp: Bitmap) {
         redoStack.clear()
     }
 }
+

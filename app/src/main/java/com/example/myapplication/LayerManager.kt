@@ -33,6 +33,10 @@ class LayerManager(initLayers: Int = 1) {
         return Layer(bitmap)
     }
 
+    fun getlistbitmap(index:Int): Bitmap{
+        return  layerList[index].bitmap
+
+    }
     fun setBackgroundColor(@ColorInt color: Int) {
         if (isBasedOnFile) return /* Avoid to erase the opened image */
         background.eraseColor(color)
