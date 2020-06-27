@@ -98,9 +98,8 @@ class PaintBoard(context: Context, attribute: AttributeSet) :
             // pos_x = (m_width-bmap.width)/2+move_x
             // pos_y = (m_height-bmap.height)/2-500+move_y
 
-            canvas = Canvas(layers.currentLayer())
             painter.setStrokeWidth(paint_width * zoom_paint[now_paint])
-            invalidate()
+            setBitmap(layers.currentLayer())
         }
     }
 
@@ -112,9 +111,8 @@ class PaintBoard(context: Context, attribute: AttributeSet) :
             // pos_x = (m_width - layers.width) / 2 + move_x
             // pos_y = (m_height - layers.height) / 2 - 500 + move_y
 
-            canvas = Canvas(layers.currentLayer())
             painter.setStrokeWidth(paint_width * zoom_paint[now_paint])
-            invalidate()
+            setBitmap(layers.currentLayer())
         }
     }
 
@@ -138,7 +136,7 @@ class PaintBoard(context: Context, attribute: AttributeSet) :
         pos_y = (m_height - layers.height) / 2 - 500 + move_y
         now_zoom = 4
         now_paint = 4
-        layers.baseBmp = Bitmap.createBitmap(nbase)
+        layers.setBaseImage(Bitmap.createBitmap(nbase))
 
         // TODO: New current layer should be a new transparent bitmap
         layers.setCurrentLayer(Bitmap.createBitmap(nbase))
@@ -148,10 +146,9 @@ class PaintBoard(context: Context, attribute: AttributeSet) :
     }
 
     fun resetUndoList() {
-        history.empty()
-        redoStack.empty()
-        history.add(Bitmap.createBitmap(layers.baseBmp))
+        history.clear()
         history.add(Bitmap.createBitmap(layers.currentLayer()))
+        redoStack.clear()
     }
 
     fun undo(value: Int) {

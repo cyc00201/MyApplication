@@ -8,23 +8,11 @@ import androidx.annotation.ColorInt
 class LayerManager(initLayers: Int = 1) {
     private val layers: ArrayList<Bitmap> = ArrayList()
     var width: Int = 500
-        set(dstWidth: Int) {
-            field = dstWidth
-            setDimensions(dstWidth, this.height)
-        }
+        private set
     var height: Int = 500
-        set(dstHeight: Int) {
-            field = dstHeight
-            setDimensions(this.width, dstHeight)
-        }
+        private set
     var baseBmp: Bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-        set(bmp: Bitmap) {
-            field = bmp
-            layers.clear()
-            layers.add(newLayer())
-            isBasedOnFile = true
-
-        }
+        private set
     private var current: Int
     private var isBasedOnFile: Boolean = false
     private val MAX_LAYERS: Int = 10
@@ -49,6 +37,14 @@ class LayerManager(initLayers: Int = 1) {
         baseBmp.eraseColor(color)
     }
 
+    fun setBaseImage(bmp: Bitmap) {
+        this.baseBmp = bmp
+        layers.clear()
+        layers.add(newLayer())
+        current = 0
+        isBasedOnFile = true
+    }
+
     fun chooseLayer(index: Int) {
         this.current = index
     }
@@ -71,8 +67,11 @@ class LayerManager(initLayers: Int = 1) {
     }
 
     fun setDimensions(dstWidth: Int, dstHeight: Int) {
-        baseBmp = Bitmap.createScaledBitmap(baseBmp, dstWidth, height, true)
-        for (i in 0 until layers.size) layers[i] =
-            Bitmap.createScaledBitmap(layers[i], dstWidth, height, true)
+        this.width = dstWidth
+        this.height = dstHeight
+        this.baseBmp = Bitmap.createScaledBitmap(baseBmp, dstWidth, dstHeight, true)
+        for (i in 0 until layers.size) {
+            layers[i] = Bitmap.createScaledBitmap(layers[i], dstWidth, dstHeight, true)
+        }
     }
 }
