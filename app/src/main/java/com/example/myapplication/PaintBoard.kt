@@ -7,7 +7,6 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
 import android.widget.Toast
-import java.util.Stack
 
 
 class PaintBoard(context: Context, attribute: AttributeSet) :
@@ -17,8 +16,6 @@ class PaintBoard(context: Context, attribute: AttributeSet) :
     private var canvas: Canvas
     private var startX: Float = 0f
     private var startY: Float = 0f
-    private var history: Stack<Bitmap>
-    private var redoStack: Stack<Bitmap>
     private var layers: LayerManager
 
 
@@ -39,19 +36,16 @@ class PaintBoard(context: Context, attribute: AttributeSet) :
 
     init {
         layers = LayerManager(5)
-        history = Stack()
-        redoStack = Stack()
-        history.push(Bitmap.createBitmap(layers.currentLayer()))
 
         pos_x = (m_width - 500) / 2
         pos_y = (m_height - 500) / 2 - 500
-        canvas = Canvas(layers.currentLayer())
+        canvas = Canvas(layers.current.bitmap)
 
         painter = Paint()
         painter.setColor(Color.GRAY)
         painter.setStrokeWidth(10f)
-        o_w = layers.currentLayer().width
-        o_h = layers.currentLayer().height
+        o_w = layers.current.bitmap.width
+        o_h = layers.current.bitmap.height
 
         zoom_array_w = intArrayOf(
             (o_w * 0.3).toInt(),
@@ -99,7 +93,7 @@ class PaintBoard(context: Context, attribute: AttributeSet) :
             // pos_y = (m_height-bmap.height)/2-500+move_y
 
             painter.setStrokeWidth(paint_width * zoom_paint[now_paint])
-            setBitmap(layers.currentLayer())
+            setBitmap(layers.current.bitmap)
         }
     }
 
@@ -112,7 +106,7 @@ class PaintBoard(context: Context, attribute: AttributeSet) :
             // pos_y = (m_height - layers.height) / 2 - 500 + move_y
 
             painter.setStrokeWidth(paint_width * zoom_paint[now_paint])
-            setBitmap(layers.currentLayer())
+            setBitmap(layers.current.bitmap)
         }
     }
 
@@ -123,7 +117,7 @@ class PaintBoard(context: Context, attribute: AttributeSet) :
 
     fun chooseLayer(index: Int) {
         layers.chooseLayer(index)
-        setBitmap(layers.currentLayer())
+        setBitmap(layers.current.bitmap)
     }
 
     fun setpaintColor(color: Int) {
@@ -142,35 +136,18 @@ class PaintBoard(context: Context, attribute: AttributeSet) :
         // TODO: New current layer should be a new transparent bitmap
         layers.setCurrentLayer(Bitmap.createBitmap(nbase))
 
-        resetUndoList()
-        setBitmap(layers.currentLayer())
-    }
-
-    fun resetUndoList() {
-        history.clear()
-        history.add(Bitmap.createBitmap(layers.currentLayer()))
-        redoStack.clear()
+        setBitmap(layers.current.bitmap)
     }
 
     fun undo(value: Int) {
         // There should be at least one history image to be the current bitmap
-        if (value <= 0 || history.size - value < 1)
-            return
-        for (i in 0 until value) {
-            redoStack.push(history.pop())
-        }
-        layers.setCurrentLayer(Bitmap.createBitmap(history.peek()))
-        setBitmap(layers.currentLayer())
+        layers.current.undo(value)
+        setBitmap(layers.current.bitmap)
     }
 
     fun redo(value: Int) {
-        if (value <= 0 || redoStack.size - value < 0)
-            return
-        for (i in 0 until value) {
-            history.push(redoStack.pop())
-        }
-        layers.setCurrentLayer(Bitmap.createBitmap(history.peek()))
-        setBitmap(layers.currentLayer())
+        layers.current.redo(value)
+        setBitmap(layers.current.bitmap)
     }
 
     fun setBitmap(bmp: Bitmap) {
@@ -190,7 +167,7 @@ class PaintBoard(context: Context, attribute: AttributeSet) :
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
         canvas?.drawBitmap(
-            layers.currentLayer(),
+            layers.current.bitmap,
             (pos_x + move_x).toFloat(),
             (pos_y + move_y).toFloat(),
             painter
@@ -223,8 +200,7 @@ class PaintBoard(context: Context, attribute: AttributeSet) :
                 }
 
                 MotionEvent.ACTION_UP -> { //存步驟
-                    redoStack.clear()
-                    history.push(Bitmap.createBitmap(layers.currentLayer()))
+                    layers.current.updateHistory()
                 }
             }
 
@@ -241,7 +217,7 @@ class PaintBoard(context: Context, attribute: AttributeSet) :
                 } else {
                     move_x += m_width - (pos_x + layers.width + move_x)
                 }
-                canvas = Canvas(layers.currentLayer())
+                canvas = Canvas(layers.current.bitmap)
                 invalidate()
             }
             2 -> {
@@ -250,7 +226,7 @@ class PaintBoard(context: Context, attribute: AttributeSet) :
                 } else {
                     move_x -= (pos_x + move_x)
                 }
-                canvas = Canvas(layers.currentLayer())
+                canvas = Canvas(layers.current.bitmap)
                 invalidate()
             }
             3 -> {
@@ -259,7 +235,7 @@ class PaintBoard(context: Context, attribute: AttributeSet) :
                 } else {
                     move_y -= (pos_y + move_y)
                 }
-                canvas = Canvas(layers.currentLayer())
+                canvas = Canvas(layers.current.bitmap)
                 invalidate()
             }
             4 -> {
@@ -268,7 +244,7 @@ class PaintBoard(context: Context, attribute: AttributeSet) :
                 } else {
                     move_y += m_height - 744 - (pos_y + layers.height + move_y)
                 }
-                canvas = Canvas(layers.currentLayer())
+                canvas = Canvas(layers.current.bitmap)
                 invalidate()
             }
         }
