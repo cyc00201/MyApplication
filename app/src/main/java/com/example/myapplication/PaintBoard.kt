@@ -177,8 +177,9 @@ class PaintBoard(context: Context, attribute: AttributeSet) :
 
     fun setBitmap(bmp: Bitmap) {
         try {
-            canvas.drawBitmap(bmp, 0f, 0f, painter)
             canvas.setBitmap(bmp)
+            canvas.drawBitmap(bmp, 0f, 0f, painter)
+            invalidate()
         } catch (e: Exception) {
             Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
         }
