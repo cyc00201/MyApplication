@@ -62,8 +62,8 @@ class MainActivity : AppCompatActivity() {
 
         savebutton.setOnClickListener { saveClickHandler ()}
         openfilebutton.setOnClickListener { to_openfile_interface() }
-        redobutton.setOnClickListener { paintboard.unredo(1) }
-        undobutton.setOnClickListener {paintboard.unredo(-1)  }
+        redobutton.setOnClickListener { paintboard.redo(1) }
+        undobutton.setOnClickListener { paintboard.undo(1)  }
         colorbutton.setOnClickListener { colorselect() }
 
         paintwidthtext.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->

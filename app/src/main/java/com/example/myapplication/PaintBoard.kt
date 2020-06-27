@@ -7,7 +7,7 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
 import android.widget.Toast
-import java.util.*
+import java.util.Stack
 
 
 class PaintBoard(context: Context, attribute: AttributeSet) :
@@ -17,8 +17,8 @@ class PaintBoard(context: Context, attribute: AttributeSet) :
     private var canvas: Canvas
     private var startX: Float = 0f
     private var startY: Float = 0f
-    private var list: MutableList<Bitmap>
-    private var index: Int = 1
+    private var history: Stack<Bitmap>
+    private var redoStack: Stack<Bitmap>
     private var layers: LayerManager
 
 
@@ -39,9 +39,10 @@ class PaintBoard(context: Context, attribute: AttributeSet) :
 
     init {
         layers = LayerManager(5)
-        list = mutableListOf()
-        list.add(Bitmap.createBitmap(layers.baseBmp))
-        list.add(Bitmap.createBitmap(layers.currentLayer()))
+        history = Stack()
+        redoStack = Stack()
+        history.push(Bitmap.createBitmap(layers.currentLayer()))
+
         pos_x = (m_width - 500) / 2
         pos_y = (m_height - 500) / 2 - 500
         canvas = Canvas(layers.currentLayer())
@@ -147,25 +148,36 @@ class PaintBoard(context: Context, attribute: AttributeSet) :
     }
 
     fun resetUndoList() {
-        index = 1
-        list.clear()
-        list.add(Bitmap.createBitmap(layers.baseBmp))
-        list.add(Bitmap.createBitmap(layers.currentLayer()))
+        history.empty()
+        redoStack.empty()
+        history.add(Bitmap.createBitmap(layers.baseBmp))
+        history.add(Bitmap.createBitmap(layers.currentLayer()))
     }
 
-    fun unredo(value: Int) {
-        //復原ＯＲ重做
-        if (index + value <= 0 || index + value > list.size) {
+    fun undo(value: Int) {
+        // There should be at least one history image to be the current bitmap
+        if (value <= 0 || history.size - value < 1)
             return
+        for (i in 0 until value) {
+            redoStack.push(history.pop())
         }
-        index += value
-        layers.setCurrentLayer(Bitmap.createBitmap(list[index - 1]))
+        layers.setCurrentLayer(Bitmap.createBitmap(history.peek()))
+        setBitmap(layers.currentLayer())
+    }
+
+    fun redo(value: Int) {
+        if (value <= 0 || redoStack.size - value < 0)
+            return
+        for (i in 0 until value) {
+            history.push(redoStack.pop())
+        }
+        layers.setCurrentLayer(Bitmap.createBitmap(history.peek()))
         setBitmap(layers.currentLayer())
     }
 
     fun setBitmap(bmp: Bitmap) {
         try {
-            canvas?.drawBitmap(bmp, 0f, 0f, painter)
+            canvas.drawBitmap(bmp, 0f, 0f, painter)
             canvas.setBitmap(bmp)
         } catch (e: Exception) {
             Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
@@ -212,14 +224,8 @@ class PaintBoard(context: Context, attribute: AttributeSet) :
                 }
 
                 MotionEvent.ACTION_UP -> { //存步驟
-                    if (index < list.size) {
-                        list = list.dropLast(list.size - index) as MutableList<Bitmap>
-                        if (list.size == 1) {
-                            list = mutableListOf(layers.baseBmp)
-                        }
-                    }
-                    index++
-                    list.add(Bitmap.createBitmap(layers.currentLayer()))
+                    redoStack.clear()
+                    history.push(Bitmap.createBitmap(layers.currentLayer()))
                 }
             }
 
