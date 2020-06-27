@@ -18,35 +18,41 @@
             android:orientation="horizontal">
             <Button
                 android:id="@+id/zoomInButton"
-                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:layout_width="0dp"
                 android:layout_height="57dp"
                 android:text="+" />
 
             <Button
                 android:id="@+id/zoomOutButton"
-                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:layout_width="0dp"
                 android:layout_height="57dp"
                 android:text="-" />
             <Button
                 android:id="@+id/move_r"
-                android:layout_width="53dp"
+                android:layout_weight="1"
+                android:layout_width="0dp"
                 android:layout_height="57dp"
                 android:text="R" />
 
             <Button
                 android:id="@+id/move_l"
-                android:layout_width="53dp"
+                android:layout_weight="1"
+                android:layout_width="0dp"
                 android:layout_height="57dp"
                 android:text="L" />
             <Button
                 android:id="@+id/move_t"
-                android:layout_width="53dp"
+                android:layout_weight="1"
+                android:layout_width="0dp"
                 android:layout_height="57dp"
                 android:text="T" />
 
             <Button
                 android:id="@+id/move_b"
-                android:layout_width="53dp"
+                android:layout_weight="1"
+                android:layout_width="0dp"
                 android:layout_height="57dp"
                 android:text="B" />
 
