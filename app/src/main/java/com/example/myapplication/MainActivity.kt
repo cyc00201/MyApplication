@@ -96,8 +96,6 @@ class MainActivity : AppCompatActivity() {
             paintboard.getBitmap().height,
             true)
         paintboard.setbase(bitmap)
-        paintboard.ResetBitmapset()
-        paintboard.setBitmap(bitmap)
         stream.close()
     }
 

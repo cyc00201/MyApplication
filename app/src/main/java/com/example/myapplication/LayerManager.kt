@@ -5,27 +5,40 @@ import android.graphics.Canvas
 import android.graphics.Color
 import androidx.annotation.ColorInt
 
-class LayerManager(val width: Int, val height: Int, initLayers: Int = 1) {
+class LayerManager(initLayers: Int = 1) {
     private val layers: ArrayList<Bitmap> = ArrayList()
-    var baseBmp: Bitmap = newTransparentLayer()
-        set(baseBmp: Bitmap) {
-            field = baseBmp
-            layers.clear()
-            isBasedOnFile = true
+    var width: Int = 500
+        set(dstWidth: Int) {
+            field = dstWidth
+            setDimensions(dstWidth, this.height)
         }
-    private var currentLayer: Int
+    var height: Int = 500
+        set(dstHeight: Int) {
+            field = dstHeight
+            setDimensions(this.width, dstHeight)
+        }
+    var baseBmp: Bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        set(bmp: Bitmap) {
+            field = bmp
+            layers.clear()
+            layers.add(newLayer())
+            isBasedOnFile = true
+
+        }
+    private var current: Int
     private var isBasedOnFile: Boolean = false
     private val MAX_LAYERS: Int = 10
 
     init {
+        baseBmp.eraseColor(Color.BLUE)
         for (i in 0 until initLayers) {
-            layers.add(newTransparentLayer())
+            layers.add(newLayer())
         }
 
-        currentLayer = 0;
+        current = 0;
     }
 
-    private fun newTransparentLayer(): Bitmap {
+    private fun newLayer(): Bitmap {
         val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         bitmap.eraseColor(Color.TRANSPARENT)
         return bitmap
@@ -36,22 +49,16 @@ class LayerManager(val width: Int, val height: Int, initLayers: Int = 1) {
         baseBmp.eraseColor(color)
     }
 
-    fun setCurrentLayer(index: Int) {
-        this.currentLayer = index
+    fun chooseLayer(index: Int) {
+        this.current = index
     }
 
-    fun replaceCurrentLayer(bmp: Bitmap) {
-        this.layers[currentLayer] = bmp
+    fun setCurrentLayer(bmp: Bitmap) {
+        this.layers[current] = Bitmap.createBitmap(bmp)
     }
 
     fun currentLayer(): Bitmap {
-        return this.layers[currentLayer]
-    }
-
-    fun setBackground(bitmap: Bitmap) {
-        baseBmp = bitmap
-        layers.clear()
-        layers.add(newTransparentLayer())
+        return this.layers[current]
     }
 
     fun getMergedBitmap(): Bitmap {
@@ -61,5 +68,11 @@ class LayerManager(val width: Int, val height: Int, initLayers: Int = 1) {
             canvas.drawBitmap(layers[i], 0f, 0f, null)
         }
         return baseBmp
+    }
+
+    fun setDimensions(dstWidth: Int, dstHeight: Int) {
+        baseBmp = Bitmap.createScaledBitmap(baseBmp, dstWidth, height, true)
+        for (i in 0 until layers.size) layers[i] =
+            Bitmap.createScaledBitmap(layers[i], dstWidth, height, true)
     }
 }
