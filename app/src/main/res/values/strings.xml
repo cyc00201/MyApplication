@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">My Application</string>
+    <string-array name="layer_list">
+        <item>圖層1</item>
+        <item>圖層2</item>
+        <item>圖層3</item>
+        <item>圖層4</item>
+        <item>圖層5</item>
+    </string-array>
+    <string-array name="mode_list">
+        <item>模式1</item>
+        <item>模式2</item>
+        <item>模式3</item>
+        <item>模式4</item>
+        <item>模式5</item>
+    </string-array>
+</resources>
