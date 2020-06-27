@@ -73,8 +73,15 @@ class PaintBoard(context:Context,attribute:AttributeSet) : androidx.appcompat.wi
                 zoom_array_h[now_zoom],
                 true
             )
-            pos_x = (m_width-bmap.width)/2+move_x
-            pos_y = (m_height-bmap.height)/2-500+move_y
+            if(pos_x+move_x+bmap.width > m_width){
+                move_x = m_width - pos_x - bmap.width
+            }
+
+            if(pos_y+move_y+bmap.height >  m_height-744){
+                move_y = m_height-744 - pos_y - bmap.height
+            }
+            //pos_x = (m_width-bmap.width)/2+move_x
+           // pos_y = (m_height-bmap.height)/2-500+move_y
 
             canvas = Canvas(bmap)
             painter.setStrokeWidth(paint_width*zoom_paint[now_paint])
@@ -88,8 +95,8 @@ class PaintBoard(context:Context,attribute:AttributeSet) : androidx.appcompat.wi
             now_paint-=1
             bmap = Bitmap.createScaledBitmap(bmap, zoom_array_w[now_zoom],
                 zoom_array_h[now_zoom], true)
-            pos_x = (m_width-bmap.width)/2+move_x
-            pos_y = (m_height-bmap.height)/2-500+move_y
+            //pos_x = (m_width-bmap.width)/2+move_x
+           // pos_y = (m_height-bmap.height)/2-500+move_y
 
             canvas = Canvas(bmap)
             painter.setStrokeWidth(paint_width*zoom_paint[now_paint])
@@ -161,7 +168,7 @@ class PaintBoard(context:Context,attribute:AttributeSet) : androidx.appcompat.wi
                     val stopX = event.x
                     val stopY = event.y
 
-                    canvas.drawLine(startX, startY, stopX, stopY, painter)
+                    canvas.drawLine(startX-pos_x-move_x, startY-pos_y-move_y, stopX-pos_x-move_x, stopY-pos_y-move_y, painter)
                     startX = event.x
                     startY = event.y
 
@@ -188,34 +195,50 @@ class PaintBoard(context:Context,attribute:AttributeSet) : androidx.appcompat.wi
     fun move_canvas(m_mode:Int){
         when(m_mode){
             1 -> {
-                if(pos_x+move_x+100<m_width) {
-                    move_x += 100
-                    canvas = Canvas(bmap)
-                    invalidate()
+                if(pos_x+bmap.width+move_x+100<m_width) {
+                    move_x += 100.toInt()
                 }
+                else{
+                    move_x += m_width - (pos_x+bmap.width+move_x)
+                }
+                canvas = Canvas(bmap)
+                invalidate()
             }
             2 -> {
-                if(pos_x+move_x+bmap.width-100>0) {
+                if(pos_x+move_x-100>0) {
+
                     move_x -= 100
-                    canvas = Canvas(bmap)
-                    invalidate()
+
+                }else{
+                    move_x -=  (pos_x+move_x)
                 }
+                canvas = Canvas(bmap)
+                invalidate()
             }
             3 -> {
-                if(pos_y+bmap.height+move_y-100>0) {
+                if(pos_y+move_y-100>0) {
                     move_y -= 100
-                    canvas = Canvas(bmap)
-                    invalidate()
+
                 }
+                else{
+                    move_y -= (pos_y+move_y)
+                }
+                canvas = Canvas(bmap)
+                invalidate()
             }
             4 -> {
-                if(pos_y+100+move_y<m_height-800) {
+                if(pos_y+bmap.height+100+move_y<m_height-744) {
                     move_y += 100
-                    canvas = Canvas(bmap)
-                    invalidate()
+
                 }
+                else{
+                    move_y += m_height-744-(pos_y+bmap.height+move_y)
+                }
+                canvas = Canvas(bmap)
+                invalidate()
             }
         }
 
+        Log.i("Terror",(pos_x+ move_x).toString() + " " + (pos_y+ move_y).toString())
     }
 }
