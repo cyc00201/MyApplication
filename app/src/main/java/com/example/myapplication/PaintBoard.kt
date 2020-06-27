@@ -7,6 +7,7 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
 import android.widget.Toast
+import kotlinx.android.synthetic.main.activity_main.*
 
 
 class PaintBoard(context: Context, attribute: AttributeSet) :
@@ -166,6 +167,22 @@ class PaintBoard(context: Context, attribute: AttributeSet) :
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
+        canvas?.drawBitmap(
+            layers.background,
+            (pos_x + move_x).toFloat(),
+            (pos_y + move_y).toFloat(),
+            painter
+        )
+        for(i in 0 until (context as MainActivity).layer_spinner.selectedItemPosition){
+            layers.chooseLayer(i)
+            canvas?.drawBitmap(
+                layers.current.bitmap,
+                (pos_x + move_x).toFloat(),
+                (pos_y + move_y).toFloat(),
+                painter
+            )
+        }
+        layers.chooseLayer((context as MainActivity).layer_spinner.selectedItemPosition)
         canvas?.drawBitmap(
             layers.current.bitmap,
             (pos_x + move_x).toFloat(),

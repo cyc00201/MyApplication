@@ -111,7 +111,8 @@ class MainActivity : AppCompatActivity() {
             true
         )
         paintboard.setbase(bitmap)
-        layer_spinner.setSelection(0) // Back to Layer 1
+        layer_spinner.setSelection(0)
+        paintboard.chooseLayer(0)// Back to Layer 1
         stream.close()
     }
 
