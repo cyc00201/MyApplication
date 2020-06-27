@@ -16,54 +16,46 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
             <Button
                 android:id="@+id/zoomInButton"
-                android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="57dp"
+                android:layout_weight="1"
                 android:text="+" />
 
             <Button
                 android:id="@+id/zoomOutButton"
-                android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="57dp"
+                android:layout_weight="1"
                 android:text="-" />
 
             <Button
-                android:id="@+id/move_r"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="57dp"
-                android:text="R" />
-
-
-            <Button
                 android:id="@+id/move_l"
-                android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="57dp"
+                android:layout_weight="1"
                 android:text="L" />
-            
+
             <Button
                 android:id="@+id/move_r"
                 android:layout_width="53dp"
                 android:layout_height="57dp"
                 android:text="R" />
 
-
             <Button
                 android:id="@+id/move_t"
-                android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="57dp"
+                android:layout_weight="1"
                 android:text="T" />
 
             <Button
                 android:id="@+id/move_b"
-                android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="57dp"
+                android:layout_weight="1"
                 android:text="B" />
 
         </LinearLayout>
@@ -112,7 +104,7 @@
             android:orientation="horizontal">
 
             <Spinner
-                android:id="@+id/spinner"
+                android:id="@+id/mode_spinner"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
@@ -136,7 +128,7 @@
                 android:text="10" />
 
             <Spinner
-                android:id="@+id/spinner2"
+                android:id="@+id/layer_spinner"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"

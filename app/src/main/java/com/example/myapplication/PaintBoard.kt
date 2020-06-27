@@ -121,8 +121,9 @@ class PaintBoard(context: Context, attribute: AttributeSet) :
         paint_width = width
     }
 
-    fun setCurrentLayer(index: Int) {
+    fun chooseLayer(index: Int) {
         layers.chooseLayer(index)
+        setBitmap(layers.currentLayer())
     }
 
     fun setpaintColor(color: Int) {

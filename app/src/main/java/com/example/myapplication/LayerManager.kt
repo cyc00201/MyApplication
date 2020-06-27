@@ -6,7 +6,7 @@ import android.graphics.Color
 import androidx.annotation.ColorInt
 
 class LayerManager(initLayers: Int = 1) {
-    private val layers: ArrayList<Bitmap> = ArrayList()
+    private val layerList: ArrayList<Bitmap> = ArrayList()
     var width: Int = 500
         private set
     var height: Int = 500
@@ -14,15 +14,15 @@ class LayerManager(initLayers: Int = 1) {
     var baseBmp: Bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
         private set
     private var current: Int
+    private var layerNum: Int = initLayers
     private var isBasedOnFile: Boolean = false
     private val MAX_LAYERS: Int = 10
 
     init {
         baseBmp.eraseColor(Color.BLUE)
-        for (i in 0 until initLayers) {
-            layers.add(newLayer())
+        for (i in 0 until layerNum) {
+            layerList.add(newLayer())
         }
-
         current = 0;
     }
 
@@ -39,8 +39,10 @@ class LayerManager(initLayers: Int = 1) {
 
     fun setBaseImage(bmp: Bitmap) {
         this.baseBmp = bmp
-        layers.clear()
-        layers.add(newLayer())
+        layerList.clear()
+        for (i in 0 until layerNum) {
+            layerList.add(newLayer())
+        }
         current = 0
         isBasedOnFile = true
     }
@@ -50,18 +52,18 @@ class LayerManager(initLayers: Int = 1) {
     }
 
     fun setCurrentLayer(bmp: Bitmap) {
-        this.layers[current] = Bitmap.createBitmap(bmp)
+        this.layerList[current] = Bitmap.createBitmap(bmp)
     }
 
     fun currentLayer(): Bitmap {
-        return this.layers[current]
+        return this.layerList[current]
     }
 
     fun getMergedBitmap(): Bitmap {
         val canvas = Canvas(baseBmp)
 
-        for (i in 0 until layers.size) {
-            canvas.drawBitmap(layers[i], 0f, 0f, null)
+        for (i in 0 until layerList.size) {
+            canvas.drawBitmap(layerList[i], 0f, 0f, null)
         }
         return baseBmp
     }
@@ -70,8 +72,8 @@ class LayerManager(initLayers: Int = 1) {
         this.width = dstWidth
         this.height = dstHeight
         this.baseBmp = Bitmap.createScaledBitmap(baseBmp, dstWidth, dstHeight, true)
-        for (i in 0 until layers.size) {
-            layers[i] = Bitmap.createScaledBitmap(layers[i], dstWidth, dstHeight, true)
+        for (i in 0 until layerList.size) {
+            layerList[i] = Bitmap.createScaledBitmap(layerList[i], dstWidth, dstHeight, true)
         }
     }
 }
