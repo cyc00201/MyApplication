@@ -48,12 +48,12 @@ class MainActivity : AppCompatActivity() {
         var btn_movel: Button = findViewById(R.id.move_l)
         var btn_movet: Button = findViewById(R.id.move_t)
         var btn_moveb: Button = findViewById(R.id.move_b)
-        zoomInButton.setOnClickListener { paintboard.setZoomIn() }
-        zoomOutButton.setOnClickListener { paintboard.setZoomOut() }
-        btn_mover.setOnClickListener { paintboard.move_canvas(1) }
-        btn_movel.setOnClickListener { paintboard.move_canvas(2) }
-        btn_movet.setOnClickListener { paintboard.move_canvas(3) }
-        btn_moveb.setOnClickListener { paintboard.move_canvas(4) }
+        zoomInButton.setOnClickListener { paintboard.zoomIn() }
+        zoomOutButton.setOnClickListener { paintboard.zoomOut() }
+        btn_mover.setOnClickListener { paintboard.moveCanvas(1) }
+        btn_movel.setOnClickListener { paintboard.moveCanvas(2) }
+        btn_movet.setOnClickListener { paintboard.moveCanvas(3) }
+        btn_moveb.setOnClickListener { paintboard.moveCanvas(4) }
 
         layer_spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -82,7 +82,7 @@ class MainActivity : AppCompatActivity() {
         paintwidthtext.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
             if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
 
-                paintboard.setpainterwidh(paintwidthtext.text.toString().toFloat())
+                paintboard.setPainterWidth(paintwidthtext.text.toString().toFloat())
 
                 val imm = getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
                 imm?.hideSoftInputFromWindow(v.windowToken, 0)
@@ -110,7 +110,7 @@ class MainActivity : AppCompatActivity() {
             paintboard.getBitmap().height,
             true
         )
-        paintboard.setbase(bitmap)
+        paintboard.setBaseImage(bitmap)
         layer_spinner.setSelection(0)
         paintboard.chooseLayer(0)// Back to Layer 1
         stream.close()
@@ -153,7 +153,7 @@ class MainActivity : AppCompatActivity() {
                 //選色
                 val color: Int = data!!.getIntExtra("pixel", Color.GRAY)
                 colorbutton.setBackgroundColor(color)
-                paintboard.setpaintColor(color)
+                paintboard.setPainterColor(color)
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data)
