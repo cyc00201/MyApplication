@@ -27,6 +27,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var redobutton: ImageButton
     private lateinit var undobutton: ImageButton
     private lateinit var openfilebutton: Button
+    private lateinit var clearbutton:Button
+  //  private lateinit var modespinner:Spinner
     private lateinit var layer_spinner: Spinner
 
 
@@ -41,13 +43,16 @@ class MainActivity : AppCompatActivity() {
         redobutton = findViewById(R.id.imageButton2)
         undobutton = findViewById(R.id.imageButton)
         openfilebutton = findViewById(R.id.button5)
+        clearbutton = findViewById(R.id.button4)
         layer_spinner = findViewById(R.id.layer_spinner)
+        // modespinner = findViewById(R.id.mode_spinner)
         var zoomInButton: Button = findViewById(R.id.zoomInButton)
         var zoomOutButton: Button = findViewById(R.id.zoomOutButton)
         var btn_mover: Button = findViewById(R.id.move_r)
         var btn_movel: Button = findViewById(R.id.move_l)
         var btn_movet: Button = findViewById(R.id.move_t)
         var btn_moveb: Button = findViewById(R.id.move_b)
+
         zoomInButton.setOnClickListener { paintboard.zoomIn() }
         zoomOutButton.setOnClickListener { paintboard.zoomOut() }
         btn_mover.setOnClickListener { paintboard.moveCanvas(1) }
@@ -68,6 +73,8 @@ class MainActivity : AppCompatActivity() {
                 paintboard.chooseLayer(position)
             }
         }
+
+
     }
 
     override fun onResume() {
@@ -78,7 +85,7 @@ class MainActivity : AppCompatActivity() {
         redobutton.setOnClickListener { paintboard.redo(1) }
         undobutton.setOnClickListener { paintboard.undo(1) }
         colorbutton.setOnClickListener { colorselect() }
-
+        clearbutton.setOnClickListener{paintboard.clear()}
         paintwidthtext.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
             if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
 
@@ -106,13 +113,15 @@ class MainActivity : AppCompatActivity() {
         val stream = file.inputStream()
         val bitmap: Bitmap = Bitmap.createScaledBitmap(
             BitmapFactory.decodeStream(stream),
-            paintboard.getBitmap().width,
-            paintboard.getBitmap().height,
+            paintboard.getCurrentBitmap().width,
+            paintboard.getCurrentBitmap().height,
             true
         )
+
         paintboard.setBaseImage(bitmap)
         layer_spinner.setSelection(0)
-        paintboard.chooseLayer(0)// Back to Layer 1
+        paintboard.chooseLayer(0)
+        // Back to Layer 1
         stream.close()
     }
 
@@ -214,10 +223,11 @@ class MainActivity : AppCompatActivity() {
 
 
                 val stream = FileOutputStream(file)
+
                 Bitmap.createScaledBitmap(
                     paintboard.getBitmap(),
-                    Resources.getSystem().displayMetrics.widthPixels,
-                    Resources.getSystem().displayMetrics.widthPixels,
+                    paintboard.getCurrentBitmap().width,
+                    paintboard.getCurrentBitmap().height,
                     true
                 ).compress(Bitmap.CompressFormat.JPEG, 100, stream)
 

@@ -30,7 +30,7 @@ class ColorWheel(context: Context,attributes: AttributeSet): androidx.appcompat.
         super.onDraw(canvas)
 
         colorWheel()
-        canvas?.drawBitmap(bmap,0f,-100f,Paint())
+        canvas?.drawBitmap(bmap,0f,0f,Paint())
 
 
     }

@@ -90,12 +90,12 @@
                 app:srcCompat="@android:drawable/ic_menu_revert" />
 
 
-            <Button
+           <!-- <Button
                 android:id="@+id/button2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
-                android:text="填滿" />
+                android:text="填滿" />-->
         </LinearLayout>
 
         <LinearLayout
@@ -103,12 +103,14 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <Spinner
+           <!-- <Spinner
                 android:id="@+id/mode_spinner"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
-                android:entries="@array/mode_list" /><!-- 畫圖模式 -->
+                android:entries="@array/mode_list" />-->
+                <!-- 畫圖模式 -->
+
 
             <TextView
                 android:id="@+id/textView"

@@ -1,6 +1,8 @@
 package com.example.myapplication
 
 import android.graphics.Bitmap
+import android.util.Log
+import android.widget.Toast
 import java.util.*
 
 class Layer(bmp: Bitmap) {
@@ -17,6 +19,7 @@ class Layer(bmp: Bitmap) {
 
     fun undo(value: Int) {
         // There should be at least one history image to be the current bitmap
+     Log.i("Terror",undoStack.size.toString())
         if (value <= 0 || undoStack.size - value < 1)
             return
         for (i in 0 until value) {

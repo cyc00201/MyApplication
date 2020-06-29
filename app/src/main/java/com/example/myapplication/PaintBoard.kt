@@ -9,7 +9,9 @@ import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.core.graphics.set
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlin.math.sqrt
 
 
 class PaintBoard(context: Context, attribute: AttributeSet) :
@@ -20,7 +22,7 @@ class PaintBoard(context: Context, attribute: AttributeSet) :
     private var startX: Float = 0f
     private var startY: Float = 0f
     private var layers: LayerManager
-
+  //  private  var mode :Int = 0
     private val mWidth = Resources.getSystem().displayMetrics.widthPixels
     private val mHeight = Resources.getSystem().displayMetrics.heightPixels
     private var offsetX: Float = 0f
@@ -59,6 +61,9 @@ class PaintBoard(context: Context, attribute: AttributeSet) :
             return true
         }
     }
+   /* fun choosemode(nmode:Int){
+        mode = nmode
+    }*/
 
     fun zoomIn() {
         scaleFactor *= 1.1f
@@ -90,9 +95,8 @@ class PaintBoard(context: Context, attribute: AttributeSet) :
 
     fun setBaseImage(bmp: Bitmap) {
         layers.setBaseImage(Bitmap.createBitmap(bmp))
-        centerCanvas()
-
         setBitmap(layers.current.bitmap)
+        centerCanvas()
     }
 
     fun undo(value: Int) {
@@ -116,9 +120,19 @@ class PaintBoard(context: Context, attribute: AttributeSet) :
     }
 
     fun getBitmap(): Bitmap {
-        return layers.getMergedBitmap()
+        layers.MergedBitmap()
+        invalidate()
+        return layers.background
+    }
+    fun getCurrentBitmap():Bitmap{
+        return  layers.current.bitmap
     }
 
+    fun clear(){
+        layers.current.bitmap.eraseColor(Color.TRANSPARENT)
+        layers.current.updateHistory()
+        invalidate()
+    }
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         canvas.save()
@@ -151,6 +165,7 @@ class PaintBoard(context: Context, attribute: AttributeSet) :
         val y: Float = (event.y / scaleFactor) - offsetY
 
         if (event.pointerCount >= 2) {
+
             scaleDetector.onTouchEvent(event)
             return true
         }
@@ -159,6 +174,7 @@ class PaintBoard(context: Context, attribute: AttributeSet) :
                 startX = x
                 startY = y
             }
+
             MotionEvent.ACTION_MOVE -> {
                 canvas.drawLine(
                     startX,
@@ -170,6 +186,8 @@ class PaintBoard(context: Context, attribute: AttributeSet) :
                 startX = x
                 startY = y
                 invalidate()
+               // painter.setXfermode(PorterDuffXfermode(PorterDuff.Mode.SRC))
+
             }
             MotionEvent.ACTION_UP -> { //存步驟
                 layers.current.updateHistory()

@@ -8,10 +8,10 @@
         <item>圖層5</item>
     </string-array>
     <string-array name="mode_list">
-        <item>模式1</item>
-        <item>模式2</item>
-        <item>模式3</item>
-        <item>模式4</item>
-        <item>模式5</item>
+        <item>點</item>
+        <item>橡皮擦</item>
+        <item>圓</item>
+        <item>方</item>
+        <item>多邊形</item>
     </string-array>
 </resources>

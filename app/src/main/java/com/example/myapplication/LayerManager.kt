@@ -1,8 +1,6 @@
 package com.example.myapplication
 
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Color
+import android.graphics.*
 import androidx.annotation.ColorInt
 
 class LayerManager(initLayers: Int = 1) {
@@ -16,7 +14,7 @@ class LayerManager(initLayers: Int = 1) {
     var current: Layer
         private set
     private var layerNum: Int = initLayers
-    private var isBasedOnFile: Boolean = false
+    public var isBasedOnFile: Boolean = false
     private val MAX_LAYERS: Int = 10
 
     init {
@@ -25,6 +23,7 @@ class LayerManager(initLayers: Int = 1) {
             layerList.add(newLayer())
         }
         current = layerList[0];
+
     }
 
     private fun newLayer(): Layer {
@@ -33,15 +32,13 @@ class LayerManager(initLayers: Int = 1) {
         return Layer(bitmap)
     }
 
-    fun setBackgroundColor(@ColorInt color: Int) {
-        if (isBasedOnFile) return /* Avoid to erase the opened image */
-        background.eraseColor(color)
-    }
+
 
     fun setBaseImage(bmp: Bitmap) {
-        this.background = bmp
+        background.eraseColor(Color.BLUE)
         layerList.clear()
-        for (i in 0 until layerNum) {
+        layerList.add(Layer(bmp.copy(Bitmap.Config.ARGB_8888,true)))
+        for (i in 1 until layerNum) {
             layerList.add(newLayer())
         }
         current = layerList[0]
@@ -52,26 +49,15 @@ class LayerManager(initLayers: Int = 1) {
         current = layerList[index]
     }
 
-    fun getMergedBitmap(): Bitmap {
+    fun MergedBitmap() {
         val canvas = Canvas(background)
-
+        var painter = Paint()
+        painter.setXfermode(
+            PorterDuffXfermode(PorterDuff.Mode.ADD))
         for (i in 0 until layerList.size) {
-            canvas.drawBitmap(layerList[i].bitmap, 0f, 0f, null)
-        }
-        return background
-    }
-
-    fun setCurrentLayer(bmp: Bitmap) {
-        this.layerList[layerList.indexOf(current)] = Layer(Bitmap.createBitmap(bmp))
-    }
-
-    fun setDimensions(dstWidth: Int, dstHeight: Int) {
-        this.width = dstWidth
-        this.height = dstHeight
-        this.background = Bitmap.createScaledBitmap(background, dstWidth, dstHeight, true)
-        for (i in 0 until layerList.size) {
-            layerList[i] =
-                Layer(Bitmap.createScaledBitmap(layerList[i].bitmap, dstWidth, dstHeight, true))
+            canvas.drawBitmap(layerList[i].bitmap, 0f, 0f, painter)
         }
     }
+
+
 }
