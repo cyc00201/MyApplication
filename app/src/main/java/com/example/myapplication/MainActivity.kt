@@ -29,6 +29,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var openfilebutton: Button
     private lateinit var clearbutton:Button
   //  private lateinit var modespinner:Spinner
+    private  lateinit var typebutton:Button
     private lateinit var layer_spinner: Spinner
 
 
@@ -44,6 +45,8 @@ class MainActivity : AppCompatActivity() {
         undobutton = findViewById(R.id.imageButton)
         openfilebutton = findViewById(R.id.button5)
         clearbutton = findViewById(R.id.button4)
+        typebutton = findViewById(R.id.button2)
+        paintboard.test = typebutton.tag.toString().toInt()
         layer_spinner = findViewById(R.id.layer_spinner)
         // modespinner = findViewById(R.id.mode_spinner)
         var zoomInButton: Button = findViewById(R.id.zoomInButton)
@@ -86,6 +89,18 @@ class MainActivity : AppCompatActivity() {
         undobutton.setOnClickListener { paintboard.undo(1) }
         colorbutton.setOnClickListener { colorselect() }
         clearbutton.setOnClickListener{paintboard.clear()}
+        typebutton.setOnClickListener{
+            if(typebutton.tag == 0){
+                typebutton.tag = 1
+                typebutton.text = "eraser"
+            }
+            else{
+                typebutton.tag = 0
+                typebutton.text = "paint"
+            }
+            paintboard.test = typebutton.tag.toString().toInt()
+
+        }
         paintwidthtext.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
             if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
 
@@ -118,10 +133,11 @@ class MainActivity : AppCompatActivity() {
             true
         )
 
-        paintboard.setBaseImage(bitmap)
+
         layer_spinner.setSelection(0)
         paintboard.chooseLayer(0)
         // Back to Layer 1
+        paintboard.setBaseImage(bitmap)
         stream.close()
     }
 

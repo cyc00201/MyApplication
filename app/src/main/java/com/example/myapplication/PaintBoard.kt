@@ -30,6 +30,7 @@ class PaintBoard(context: Context, attribute: AttributeSet) :
     private var scaleFactor: Float = 1f
     private var scaleDetector = ScaleGestureDetector(context, ScaleGestureListener())
     private var moveRate = 50.0f
+    var test =2
 
     init {
         layers = LayerManager(5)
@@ -129,6 +130,9 @@ class PaintBoard(context: Context, attribute: AttributeSet) :
     }
 
     fun clear(){
+        if(layers.isBasedOnFile){
+            layers.background.eraseColor(Color.BLUE)
+        }
         layers.current.bitmap.eraseColor(Color.TRANSPARENT)
         layers.current.updateHistory()
         invalidate()
@@ -157,7 +161,7 @@ class PaintBoard(context: Context, attribute: AttributeSet) :
             0f, 0f,
             painter
         )
-        canvas.restore()
+       canvas.restore()
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -175,7 +179,24 @@ class PaintBoard(context: Context, attribute: AttributeSet) :
                 startY = y
             }
 
-            MotionEvent.ACTION_MOVE -> {
+            MotionEvent.ACTION_MOVE ->{
+              if(test == 1){
+                    //擦子
+                    var erasepainter = Paint()
+                    erasepainter.color = Color.TRANSPARENT
+                    erasepainter.strokeWidth = painter.strokeWidth
+                    erasepainter.setXfermode(PorterDuffXfermode(PorterDuff.Mode.CLEAR))
+                    canvas.drawLine(
+                        startX,
+                        startY,
+                        x,
+                        y,
+                        erasepainter)
+                    startX = x
+                    startY = y
+                    invalidate()
+                }
+                else{//畫點
                 canvas.drawLine(
                     startX,
                     startY,
@@ -183,13 +204,17 @@ class PaintBoard(context: Context, attribute: AttributeSet) :
                     y,
                     painter
                 )
-                startX = x
-                startY = y
-                invalidate()
-               // painter.setXfermode(PorterDuffXfermode(PorterDuff.Mode.SRC))
+                    startX = x
+                    startY = y
+                    invalidate()
+                }
+
+
+               //
 
             }
             MotionEvent.ACTION_UP -> { //存步驟
+
                 layers.current.updateHistory()
             }
         }

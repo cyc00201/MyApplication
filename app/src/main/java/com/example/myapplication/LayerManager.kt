@@ -50,10 +50,11 @@ class LayerManager(initLayers: Int = 1) {
     }
 
     fun MergedBitmap() {
+        isBasedOnFile = true
         val canvas = Canvas(background)
         var painter = Paint()
         painter.setXfermode(
-            PorterDuffXfermode(PorterDuff.Mode.ADD))
+            PorterDuffXfermode(PorterDuff.Mode.SRC_ATOP))
         for (i in 0 until layerList.size) {
             canvas.drawBitmap(layerList[i].bitmap, 0f, 0f, painter)
         }
